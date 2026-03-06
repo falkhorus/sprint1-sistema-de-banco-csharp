@@ -50,5 +50,23 @@ namespace SistemaBancario
                 Console.WriteLine($"[Erro] Valor solicitado (R$ {valor}) ultrapassa o limite disponivel (R$ {LimiteEmprestimo}).");
             }
         }
+
+
+
+        public void ExibirExtrato()
+        {
+            Console.WriteLine("--- EXTRATO CONTA EMPRESARIAL ---");
+            Console.WriteLine($"Titular: {Titular}");
+            Console.WriteLine($"Numero da Conta: {NumeroConta}");
+            Console.WriteLine($"Saldo atual: R$ {Saldo}");
+            Console.WriteLine($"Limite de emprestimo disponivel: R$ {LimiteEmprestimo}");
+            Console.WriteLine("------------------------------");
+        }
+
+
+
+
+
+
     }
 }

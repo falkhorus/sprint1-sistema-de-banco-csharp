@@ -4,7 +4,7 @@ namespace SistemaBancario
 {
     // 1. HERANÇA: O símbolo ":" significa que ContaCorrente "é uma" ContaBancaria.
     // Ela herda o Titular, NumeroConta, Saldo e o método Depositar.
-    public class ContaCorrente : ContaBancaria
+    public class ContaCorrente : ContaBancaria, IImprimivel  // preciso adicionar o IImprimivel aqui para garantir que a conta corrente também tenha o método ExibirExtrato, que é obrigatório para quem usar essa interface. (Além disso também vou adicionar na Conta empresarial e poupança)
     {
         // Propriedade exclusiva da Conta Corrente
         public decimal TaxaSaque { get; private set; }
@@ -39,5 +39,23 @@ namespace SistemaBancario
                 Console.WriteLine($"[Erro] Saldo insuficiente. Tentativa de sacar R$ {valor} + R$ {TaxaSaque} (Taxa). Saldo atual: R$ {Saldo}");
             }
         }
+
+
+
+
+        // CUMPRINDO O CONTRATO DA INTERFACE  (preciso fazer isso também na conta empresarial e conta poupança)
+        public void ExibirExtrato()
+        {
+            Console.WriteLine("--- EXTRATO CONTA CORRENTE ---");
+            Console.WriteLine($"Titular: {Titular}");
+            Console.WriteLine($"Numero da Conta: {NumeroConta}");
+            Console.WriteLine($"Saldo atual: R$ {Saldo}");
+            Console.WriteLine($"Taxa de saque cobrada por operacao: R$ {TaxaSaque}");
+            Console.WriteLine("------------------------------");
+        }
+
+
+
+
     }
 }

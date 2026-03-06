@@ -3,7 +3,7 @@
 namespace SistemaBancario
 {
     // HERANCA: A ContaPoupanca herda da nossa base ContaBancaria
-    public class ContaPoupanca : ContaBancaria
+    public class ContaPoupanca : ContaBancaria, IImprimivel
     {
         // Propriedade exclusiva da Poupanca
         public decimal TaxaRendimento { get; private set; }
@@ -40,5 +40,20 @@ namespace SistemaBancario
             Saldo += rendimento; // Adiciona o rendimento ao saldo
             Console.WriteLine($"Rendimento de R$ {rendimento} aplicado. Novo saldo: R$ {Saldo}");
         }
+
+
+        public void ExibirExtrato()
+        {
+            Console.WriteLine("--- EXTRATO CONTA POUPANCA ---");
+            Console.WriteLine($"Titular: {Titular}");
+            Console.WriteLine($"Numero da Conta: {NumeroConta}");
+            Console.WriteLine($"Saldo atual: R$ {Saldo}");
+            Console.WriteLine($"Taxa de rendimento aplicada: {TaxaRendimento * 100}%");
+            Console.WriteLine("------------------------------");
+        }
+
+
+
+
     }
 }
