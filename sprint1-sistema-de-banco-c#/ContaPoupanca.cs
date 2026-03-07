@@ -20,7 +20,9 @@ namespace SistemaBancario
             if (valor <= 0)
             {
                 throw new ArgumentException("O valor do saque deve ser maior que zero.");
+
             }
+            Thread.Sleep(2000);
 
             if (Saldo >= valor)
             {
@@ -36,20 +38,21 @@ namespace SistemaBancario
         // METODO EXCLUSIVO: Apenas a poupanca tem rendimento.
         public void RenderJuros()
         {
-            decimal rendimento = Saldo * TaxaRendimento;
-            Saldo += rendimento; // Adiciona o rendimento ao saldo
-            Console.WriteLine($"Rendimento de R$ {rendimento} aplicado. Novo saldo: R$ {Saldo}");
+            decimal rendimento = Math.Round(Saldo * TaxaRendimento, 2);
+            Saldo += rendimento;
         }
 
 
         public void ExibirExtrato()
         {
+            Thread.Sleep(5000);
             Console.WriteLine("--- EXTRATO CONTA POUPANCA ---");
             Console.WriteLine($"Titular: {Titular}");
             Console.WriteLine($"Numero da Conta: {NumeroConta}");
             Console.WriteLine($"Saldo atual: R$ {Saldo}");
             Console.WriteLine($"Taxa de rendimento aplicada: {TaxaRendimento * 100}%");
             Console.WriteLine("------------------------------");
+            Thread.Sleep(5000);
         }
 
 

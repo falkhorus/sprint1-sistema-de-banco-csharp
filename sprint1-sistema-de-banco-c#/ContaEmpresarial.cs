@@ -55,12 +55,14 @@ namespace SistemaBancario
 
         public void ExibirExtrato()
         {
+            Thread.Sleep(5000);
             Console.WriteLine("--- EXTRATO CONTA EMPRESARIAL ---");
             Console.WriteLine($"Titular: {Titular}");
             Console.WriteLine($"Numero da Conta: {NumeroConta}");
             Console.WriteLine($"Saldo atual: R$ {Saldo}");
             Console.WriteLine($"Limite de emprestimo disponivel: R$ {LimiteEmprestimo}");
             Console.WriteLine("------------------------------");
+            Thread.Sleep(5000);
         }
 
 

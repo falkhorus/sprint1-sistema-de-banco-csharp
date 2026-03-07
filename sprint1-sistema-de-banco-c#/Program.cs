@@ -1,18 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Timers;
 
 namespace SistemaBancario
 {
     class Program
     {
+        // A lista agora fica aqui, fora do Main
+        static List<ContaBancaria> listaDeContas = new List<ContaBancaria>();
+
         static void Main(string[] args)
         {
-            List<ContaBancaria> listaDeContas = new List<ContaBancaria>();
+
+            System.Timers.Timer relogioRendimento = new System.Timers.Timer(10000);
+            relogioRendimento.Elapsed += AplicarRendimentoAutomatico;
+            relogioRendimento.AutoReset = true;
+            relogioRendimento.Enabled = true;
+
             bool sistemaRodando = true;
 
             while (sistemaRodando)
             {
-                Console.WriteLine("\n--- MENU DO SISTEMA BANCÁRIO ---");
+                Thread.Sleep(3000);
+                Console.Clear(); // Limpa a tela toda vez que o menu recarrega
+                Console.WriteLine(); // Deixa a primeira linha livre para a notificação do relógio (O temporizador de Juros)
+                Console.WriteLine("--- MENU DO SISTEMA BANCÁRIO ---");
                 Console.WriteLine("1. Criar uma nova Conta Corrente");
                 Console.WriteLine("2. Criar uma nova Conta Poupança");
                 Console.WriteLine("3. Criar uma nova Conta Empresarial");
@@ -37,6 +49,7 @@ namespace SistemaBancario
                             ContaCorrente novaCorrente = new ContaCorrente(numeroCorrente, titularCorrente, 0, 5.00m);
                             listaDeContas.Add(novaCorrente);
                             Console.WriteLine("Conta Corrente criada com sucesso!");
+                            Thread.Sleep(2000); // Pausa por 2 segundos para o usuário ler a mensagem antes de limpar a tela
                             break;
 
                         case "2":
@@ -49,6 +62,7 @@ namespace SistemaBancario
                             ContaPoupanca novaPoupanca = new ContaPoupanca(numeroPoupanca, titularPoupanca, 0, 0.05m);
                             listaDeContas.Add(novaPoupanca);
                             Console.WriteLine("Conta Poupança criada com sucesso!");
+                            Thread.Sleep(2000);
                             break;
 
                         case "3":
@@ -61,12 +75,14 @@ namespace SistemaBancario
                             ContaEmpresarial novaEmpresarial = new ContaEmpresarial(numeroEmpresarial, titularEmpresarial, 0, 1000.00m);
                             listaDeContas.Add(novaEmpresarial);
                             Console.WriteLine("Conta Empresarial criada com sucesso!");
+                            Thread.Sleep(2000);
                             break;
 
                         case "4": // a função desse case é apenas para depositar, sem gerar extrato
                             if (listaDeContas.Count == 0)
                             {
                                 Console.WriteLine("Nenhuma conta foi criada ainda. Crie uma conta primeiro.");
+                                Thread.Sleep(2000);
                                 break;
                             }
 
@@ -80,6 +96,7 @@ namespace SistemaBancario
                             if (contaDeposito == null)
                             {
                                 Console.WriteLine("[ERRO] Conta não encontrada com esse número.");
+                                Thread.Sleep(2000);
                                 break; // Interrompe a operação e volta pro menu
                             }
 
@@ -93,6 +110,7 @@ namespace SistemaBancario
                             if (listaDeContas.Count == 0)
                             {
                                 Console.WriteLine("Nenhuma conta foi criada ainda. Crie uma conta primeiro.");
+                                Thread.Sleep(2000);
                                 break;
                             }
 
@@ -105,6 +123,7 @@ namespace SistemaBancario
                             if (contaSaque == null)
                             {
                                 Console.WriteLine("[ERRO] Conta não encontrada com esse número.");
+                                Thread.Sleep(2000);
                                 break;
                             }
 
@@ -118,15 +137,18 @@ namespace SistemaBancario
                                 Console.WriteLine("\nGerando comprovante...");
                                 contaQueImprime.ExibirExtrato();
                             }
+                            Thread.Sleep(2000);
                             break;
 
-                        case "6": // Antigo case 4 (Sair)
+                        case "6": //Pra Sair
                             sistemaRodando = false;
                             Console.WriteLine("Encerrando o sistema. Até logo!");
+                            Thread.Sleep(2000);
                             break;
 
                         default:
                             Console.WriteLine("Opção inválida. Digite um número de 1 a 6.");
+                            Thread.Sleep(2000);
                             break;
                     }
                 }
@@ -142,7 +164,40 @@ namespace SistemaBancario
                 {
                     Console.WriteLine($"\n[ERRO INESPERADO] Aconteceu um problema: {ex.Message}");
                 }
+      
             }
         }
+
+
+        static void AplicarRendimentoAutomatico(object? source, ElapsedEventArgs e)
+        {
+            foreach (ContaBancaria conta in listaDeContas)
+            {
+                if (conta is ContaPoupanca poupanca)
+                {
+                    if (poupanca.Saldo > 0)
+                    {
+                        // 1. Faz a matemática do rendimento acontecer em silêncio
+                        poupanca.RenderJuros();
+
+                        // 2. Salva a posição exata onde a barrinha de digitação está agora
+                        int posicaoEsquerda = Console.CursorLeft;
+                        int posicaoTopo = Console.CursorTop;
+
+                        // 3. Move o cursor invisivelmente para a primeira linha (0) e primeira coluna (0)
+                        Console.SetCursorPosition(0, 0);
+
+                        // 4. Cria a mensagem e usa PadRight para preencher o resto da linha com espaços, apagando o texto velho
+                        string mensagem = $"[NOTIFICAÇÃO] A poupança de {poupanca.Titular} rendeu! Novo Saldo: R$ {poupanca.Saldo:F2}";
+                        Console.Write(mensagem.PadRight(Console.WindowWidth - 1));
+
+                        // 5. Devolve o cursor para o lugar original onde você estava digitando
+                        Console.SetCursorPosition(posicaoEsquerda, posicaoTopo);
+                    }
+                }
+            }
+        }
+
+
     }
 }

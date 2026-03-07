@@ -46,12 +46,14 @@ namespace SistemaBancario
         // CUMPRINDO O CONTRATO DA INTERFACE  (preciso fazer isso também na conta empresarial e conta poupança)
         public void ExibirExtrato()
         {
+            Thread.Sleep(5000);
             Console.WriteLine("--- EXTRATO CONTA CORRENTE ---");
             Console.WriteLine($"Titular: {Titular}");
             Console.WriteLine($"Numero da Conta: {NumeroConta}");
             Console.WriteLine($"Saldo atual: R$ {Saldo}");
             Console.WriteLine($"Taxa de saque cobrada por operacao: R$ {TaxaSaque}");
             Console.WriteLine("------------------------------");
+            Thread.Sleep(5000);
         }
 
 
