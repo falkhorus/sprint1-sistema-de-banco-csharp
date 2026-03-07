@@ -24,13 +24,15 @@ namespace SistemaBancario
                 Thread.Sleep(3000);
                 Console.Clear(); // Limpa a tela toda vez que o menu recarrega
                 Console.WriteLine(); // Deixa a primeira linha livre para a notificação do relógio (O temporizador de Juros)
-                Console.WriteLine("--- MENU DO SISTEMA BANCÁRIO ---");
+                Console.WriteLine("------ FALCON BANK ------");
+                Console.WriteLine("Aqui você pode muito mais!\n");
                 Console.WriteLine("1. Criar uma nova Conta Corrente");
                 Console.WriteLine("2. Criar uma nova Conta Poupança");
                 Console.WriteLine("3. Criar uma nova Conta Empresarial");
                 Console.WriteLine("4. Fazer um Depósito");
                 Console.WriteLine("5. Fazer um Saque e ver Extrato");
-                Console.WriteLine("6. Sair");
+                Console.WriteLine("6. Pedir Empréstimo (Conta Empresarial)");
+                Console.WriteLine("7. Sair");
                 Console.Write("Escolha uma opção: ");
 
                 string opcaoEscolhida = Console.ReadLine()!;
@@ -140,15 +142,49 @@ namespace SistemaBancario
                             Thread.Sleep(2000);
                             break;
 
-                        case "6": //Pra Sair
+                        case "6":
+                            if (listaDeContas.Count == 0)
+                            {
+                                Console.WriteLine("Nenhuma conta foi criada ainda. Crie uma conta primeiro.");
+                                break;
+                            }
+
+                            Console.Write("Digite o número da conta para o empréstimo: ");
+                            string numeroEmp = Console.ReadLine()!;
+
+                            ContaBancaria contaBusca = listaDeContas.Find(c => c.NumeroConta == numeroEmp)!;
+
+                            if (contaBusca == null)
+                            {
+                                Console.WriteLine("[ERRO] Conta não encontrada com esse número.");
+                                break;
+                            }
+
+                            // Aqui está o segredo: verificamos se a conta encontrada é realmente do TIPO ContaEmpresarial
+                            // Se for, ele cria uma variável temporária chamada contaEmpresa para podermos usar o Limite
+                            if (contaBusca is ContaEmpresarial contaEmpresa)
+                            {
+                                Console.Write($"Seu limite disponível é R$ {contaEmpresa.LimiteEmprestimo:F2}. Quanto deseja pedir? R$ ");
+                                decimal valorEmprestimo = Convert.ToDecimal(Console.ReadLine());
+
+                                contaEmpresa.RealizarEmprestimo(valorEmprestimo);
+                            }
+                            else
+                            {
+                                // Se a pessoa digitar o número de uma conta corrente ou poupança, o sistema barra
+                                Console.WriteLine("[ERRO] Operação negada. Apenas contas empresariais podem solicitar empréstimo.");
+                            }
+                            break;
+
+                        case "7":
                             sistemaRodando = false;
+                            relogioRendimento.Stop();
                             Console.WriteLine("Encerrando o sistema. Até logo!");
                             Thread.Sleep(2000);
                             break;
 
                         default:
-                            Console.WriteLine("Opção inválida. Digite um número de 1 a 6.");
-                            Thread.Sleep(2000);
+                            Console.WriteLine("Opção inválida. Digite um número de 1 a 7.");
                             break;
                     }
                 }
